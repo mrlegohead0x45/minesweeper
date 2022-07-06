@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "summer project"
+version = "0.1.0"
+description = ""
+authors = ["mrlegohead0x45 <mrlegohead0x45@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pygame = "^2.1.2"
+attrs = "^21.4.0"
+aiosql = "^3.4.1"
+
+[tool.poetry.dev-dependencies]
+black = "^22.6.0"
+isort = "^5.10.1"
+pre-commit = "^2.19.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
