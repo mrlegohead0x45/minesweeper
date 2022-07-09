@@ -68,8 +68,8 @@ class MinesweeperGame:
             # print position
             # pos = pygame.mouse.get_pos()
 
-        # if event.type == pygame.MOUSEBUTTONDOWN:
-        #     log.debug("mouse button down at %s", event.pos)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            log.debug("mouse button down at %s", event.pos)
 
     def cleanup(self):
         log.debug("cleaning up game")

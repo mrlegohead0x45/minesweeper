@@ -3,6 +3,8 @@ import logging as log
 import pygame
 import pygame.freetype
 
+from .action import Action
+
 
 class MainMenu:
     def __init__(
@@ -14,15 +16,26 @@ class MainMenu:
         self.font = font
         self.title_font = title_font
         self.screen = screen
+        self.btns: list[tuple[pygame.Rect, Action]] = []
 
     def display(self):
-        # make a rectangle on the screen
-        #                              r,   g,   b,     x,   y, width, height
-        pygame.draw.rect(self.screen, (118, 128, 137), (200, 300, 400, 50))
-        pygame.draw.rect(self.screen, (118, 128, 137), (200, 400, 400, 50))
-        # draw text on the screen         x,   y,    text,    r,   g,   b
-        self.font.render_to(self.screen, (210, 310), "Play", (255, 255, 255))
-        self.font.render_to(self.screen, (210, 410), "Leaderboard", (255, 255, 255))
+        # make buttons
+        buttons: list[tuple[str, Action]] = [
+            ("Play", Action.PLAY),
+            ("Leaderboard", Action.LEADERBOARD),
+            ("Credits", Action.CREDITS),
+            ("Quit", Action.QUIT),
+        ]
+        for idx, (text, action) in enumerate(buttons):
+            y = (70 * idx) + 300
+            self.btns.append(
+                (
+                    pygame.draw.rect(self.screen, (118, 128, 137), (200, y, 400, 50)),
+                    action,
+                )
+            )
+            self.font.render_to(self.screen, (210, y + 10), text, (255, 255, 255))
+
         self.title_font.render_to(
             self.screen, (210, 100), "Minesweeper", (255, 255, 255)
         )
@@ -30,5 +43,13 @@ class MainMenu:
         pygame.display.update()
         log.debug("made main menu")
 
-    def handle_event(self, event: pygame.event.Event):
-        pass
+    def handle_event(self, event: pygame.event.Event) -> Action:
+        if event.type == pygame.QUIT:
+            return Action.QUIT
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            for btn in self.btns:
+                if btn[0].collidepoint(event.pos):
+                    return btn[1]
+
+        return Action.NO_OP
