@@ -1,7 +1,9 @@
 import logging as log
+from enum import Enum
 from pathlib import Path
 
 import pygame
+import pygame.freetype
 from attrs import astuple
 
 from .colour import Colour
@@ -10,12 +12,17 @@ from .menu import MainMenu
 BG_COLOUR = Colour(195, 199, 203)
 
 
+class ScreenLocation(Enum):
+    MAIN_MENU = 0
+    GAME = 1
+    LEADERBOARD = 2
+
+
 class MinesweeperGame:
     def __init__(self):
         log.debug("creating game")
         self.running = True
         self.assets_dir = Path(__file__).parent.parent / "assets"
-        self.main_menu = MainMenu()
 
     def setup(self):
         log.debug("setting up game")
@@ -30,15 +37,23 @@ class MinesweeperGame:
         pygame.display.update()
         log.debug("filled screen")
 
+        self.text_font = pygame.freetype.SysFont("monospace", 20)
+        self.title_font = pygame.freetype.SysFont("monospace", 50)
+        self.main_menu = MainMenu(self.text_font, self.title_font, self.screen)
+        self.location = ScreenLocation.MAIN_MENU
+
     def run(self):
         log.debug("running game")
         self.setup()
-        self.main_menu.display(self.screen)
+        self.main_menu.display()
 
         while self.running:
-            for event in pygame.event.get():
-                self.handle_event(event)
+            try:
+                for event in pygame.event.get():
+                    self.handle_event(event)
 
+            except KeyboardInterrupt:
+                self.running = False
             # self.on_loop()
             # self.on_render()
 
@@ -48,10 +63,13 @@ class MinesweeperGame:
         if event.type == pygame.QUIT:
             self.running = False
 
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            log.debug(f"mouse button down at {event.pos}")
+        if self.location == ScreenLocation.MAIN_MENU:
+            self.main_menu.handle_event(event)
             # print position
             # pos = pygame.mouse.get_pos()
+
+        # if event.type == pygame.MOUSEBUTTONDOWN:
+        #     log.debug("mouse button down at %s", event.pos)
 
     def cleanup(self):
         log.debug("cleaning up game")
