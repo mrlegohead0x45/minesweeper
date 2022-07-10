@@ -6,13 +6,12 @@ import pygame
 import pygame.freetype
 from attrs import astuple
 
+from . import colours
 from .action import Action
 from .game import Game
 from .how_to_play import HowToPlay
 from .leaderboard import Leaderboard
 from .menu import MainMenu
-
-BG_COLOUR = (195, 199, 203)
 
 
 class ScreenLocation(Enum):
@@ -37,12 +36,16 @@ class MinesweeperGame:
         )
         log.debug("set icon, name")
         # self.display = pygame.display.get_surface()
-        self.screen.fill(BG_COLOUR)
+        self.screen.fill(colours.BG_COLOUR)
         pygame.display.update()
         log.debug("filled screen")
 
-        self.text_font = pygame.freetype.SysFont("monospace", 20)
-        self.title_font = pygame.freetype.SysFont("monospace", 50)
+        self.text_font = pygame.freetype.Font(
+            str(self.assets_dir / "fonts" / "Ubuntu-Regular.ttf"), 20
+        )
+        self.title_font = pygame.freetype.Font(
+            str(self.assets_dir / "fonts" / "Ubuntu-Regular.ttf"), 50
+        )
         self.main_menu = MainMenu(self.text_font, self.title_font, self.screen)
         self.game = Game(self.text_font, self.title_font, self.screen)
         self.leaderboard = Leaderboard(self.text_font, self.title_font, self.screen)
@@ -110,6 +113,11 @@ class MinesweeperGame:
         if action == Action.HOW_TO_PLAY:
             self.location = ScreenLocation.HOW_TO_PLAY
             self.how_to_play.display()
+            return
+
+        if action == Action.MAIN_MENU:
+            self.location = ScreenLocation.MAIN_MENU
+            self.main_menu.display()
             return
 
     def cleanup(self):

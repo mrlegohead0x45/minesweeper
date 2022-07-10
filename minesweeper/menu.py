@@ -3,6 +3,7 @@ import logging as log
 import pygame
 import pygame.freetype
 
+from . import colours
 from .action import Action
 
 
@@ -19,6 +20,8 @@ class MainMenu:
         self.btns: list[tuple[pygame.Rect, Action]] = []
 
     def display(self):
+        # clear the screen
+        self.screen.fill(colours.BG_COLOUR)
         # make buttons
         buttons: list[tuple[str, Action]] = [
             ("Play", Action.PLAY),
