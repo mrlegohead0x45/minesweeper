@@ -3,10 +3,10 @@ import logging as log
 import pygame
 import pygame.freetype
 
-from minesweeper.action import Action
+from .action import Action
 
 
-class Game:
+class HowToPlay:
     def __init__(
         self,
         font: pygame.freetype.Font,
@@ -18,7 +18,7 @@ class Game:
         self.screen = screen
 
     def display(self):
-        log.debug("displaying game")
+        log.debug("displaying how to play")
 
     def handle_event(self, event: pygame.event.Event) -> Action:
         return Action.NO_OP

@@ -6,4 +6,5 @@ class Action(enum.Enum):
     QUIT = 1
     PLAY = 2
     LEADERBOARD = 3
-    CREDITS = 4
+    HOW_TO_PLAY = 4
+    MAIN_MENU = 5

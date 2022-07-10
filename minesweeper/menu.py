@@ -23,7 +23,7 @@ class MainMenu:
         buttons: list[tuple[str, Action]] = [
             ("Play", Action.PLAY),
             ("Leaderboard", Action.LEADERBOARD),
-            ("Credits", Action.CREDITS),
+            ("How to play", Action.HOW_TO_PLAY),
             ("Quit", Action.QUIT),
         ]
         for idx, (text, action) in enumerate(buttons):

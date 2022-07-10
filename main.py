@@ -2,7 +2,7 @@ import logging as log
 
 import pygame
 
-from minesweeper.game import MinesweeperGame
+from minesweeper.main_game import MinesweeperGame
 
 log.basicConfig(level=log.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
