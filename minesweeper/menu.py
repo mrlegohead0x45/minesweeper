@@ -24,7 +24,7 @@ class MainMenu:
         self.screen.fill(colours.BG_COLOUR)
         # make buttons
         buttons: list[tuple[str, Action]] = [
-            ("Play", Action.DIFFICULTY_MENU),
+            ("Play", Action.PLAY),  # TODO
             ("Leaderboard", Action.LEADERBOARD),
             ("How to play", Action.HOW_TO_PLAY),
             ("Quit", Action.QUIT),

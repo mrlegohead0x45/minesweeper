@@ -109,6 +109,7 @@ class MinesweeperGame:
 
         if action == Action.PLAY:
             self.location = ScreenLocation.GAME
+            log.debug("displaying ")
             self.game.display()
             return
 

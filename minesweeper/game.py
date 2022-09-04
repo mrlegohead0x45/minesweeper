@@ -39,11 +39,21 @@ class Game:
         #     pygame.Rect(200, 100, 400, 400),
         #     pygame.Rect(200, 200, 400, 400),
 
-        self.mines
+        # pseudo
+        # tiles = []
 
-        for column in self.difficulty.columns:
-            for row in self.difficulty.rows:
-                pass
+        # loop col:
+        #     loop row:
+        #         rect = rect(coords from row, col)
+        #         append new tile(rect, random choice(true, false))
+
+        number_of_tiles = self.difficulty.rows * self.difficulty.columns
+        number_of_safe = number_of_tiles - self.difficulty.mines
+
+        for _ in range(number_of_safe):
+            pass
+
+        r = pygame.draw.rect(self.screen, colours.BTN_COLOUR, (200, 100, 440, 440))
 
         pygame.display.update()
 
