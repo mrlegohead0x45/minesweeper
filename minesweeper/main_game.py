@@ -8,6 +8,7 @@ from attrs import astuple
 
 from . import colours
 from .action import Action
+from .difficulty import DifficultyMenu
 from .game import Game
 from .how_to_play import HowToPlay
 from .leaderboard import Leaderboard
@@ -19,6 +20,7 @@ class ScreenLocation(Enum):
     GAME = 1
     LEADERBOARD = 2
     HOW_TO_PLAY = 3
+    DIFFICULTY_MENU = 4
 
 
 class MinesweeperGame:
@@ -50,6 +52,9 @@ class MinesweeperGame:
         self.game = Game(self.text_font, self.title_font, self.screen)
         self.leaderboard = Leaderboard(self.text_font, self.title_font, self.screen)
         self.how_to_play = HowToPlay(self.text_font, self.title_font, self.screen)
+        self.difficulty_menu = DifficultyMenu(
+            self.text_font, self.title_font, self.screen
+        )
         self.location = ScreenLocation.MAIN_MENU
 
     def run(self):
@@ -70,6 +75,7 @@ class MinesweeperGame:
         self.cleanup()
 
     def handle_event(self, event: pygame.event.Event):
+        log.debug("handling event in main game")
         if event.type == pygame.QUIT:
             self.running = False
             return
@@ -79,6 +85,7 @@ class MinesweeperGame:
             ScreenLocation.GAME: self.game.handle_event,
             ScreenLocation.LEADERBOARD: self.leaderboard.handle_event,
             ScreenLocation.HOW_TO_PLAY: self.how_to_play.handle_event,
+            ScreenLocation.DIFFICULTY_MENU: self.difficulty_menu.handle_event,
         }
 
         action = handlers[self.location](event)
@@ -86,7 +93,7 @@ class MinesweeperGame:
         self.take_action(action)
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            log.debug("mouse button down at %s", event.pos)
+            log.debug("mouse button down at %s, button %s", event.pos, event.button)
 
     def take_action(self, action: Action):
         if action == Action.QUIT:
@@ -118,6 +125,11 @@ class MinesweeperGame:
         if action == Action.MAIN_MENU:
             self.location = ScreenLocation.MAIN_MENU
             self.main_menu.display()
+            return
+
+        if action == Action.DIFFICULTY_MENU:
+            self.location = ScreenLocation.DIFFICULTY_MENU
+            self.difficulty_menu.display()
             return
 
     def cleanup(self):

@@ -30,7 +30,7 @@ class HowToPlay:
         self.back_button = pygame.Rect(25, 25, 100, 50)
         # back_button.center = (50, 50)
         pygame.draw.rect(self.screen, colours.BTN_COLOUR, self.back_button)
-        self.font.render_to(self.screen, (40, 40), "Back", (255, 255, 255))
+        self.font.render_to(self.screen, (40, 40), "Back", colours.TXT_COLOUR)
         # create text box in middle
         text_box = pygame.Rect(200, 100, 400, 400)
         pygame.draw.rect(self.screen, colours.BTN_COLOUR, text_box)
@@ -42,8 +42,9 @@ class HowToPlay:
 
     def handle_event(self, event: pygame.event.Event) -> Action:
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.back_button.collidepoint(event.pos):
-                log.debug("howtoplay clicked back button")
-                return Action.MAIN_MENU
+            if event.button == 1:  # left click
+                if self.back_button.collidepoint(event.pos):
+                    log.debug("howtoplay clicked back button")
+                    return Action.MAIN_MENU
 
         return Action.NO_OP

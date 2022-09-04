@@ -8,3 +8,4 @@ class Action(enum.Enum):
     LEADERBOARD = 3
     HOW_TO_PLAY = 4
     MAIN_MENU = 5
+    DIFFICULTY_MENU = 6
