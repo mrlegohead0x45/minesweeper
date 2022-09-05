@@ -42,7 +42,7 @@ class HowToPlay:
 
     def handle_event(self, event: pygame.event.Event) -> Action:
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:  # left click
+            if event.button == pygame.BUTTON_LEFT:  # left click
                 if self.back_button.collidepoint(event.pos):
                     log.debug("howtoplay clicked back button")
                     return Action.MAIN_MENU

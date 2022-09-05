@@ -55,9 +55,9 @@ class MainMenu:
             return Action.QUIT
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:  # left click
-                for btn in self.btns: # loop through all buttons
-                    if btn[0].collidepoint(event.pos): # if it is on the button
-                        return btn[1] # return the associated action
+            if event.button == pygame.BUTTON_LEFT:  # left click
+                for btn in self.btns:  # loop through all buttons
+                    if btn[0].collidepoint(event.pos):  # if it is on the button
+                        return btn[1]  # return the associated action
 
         return Action.NO_OP
