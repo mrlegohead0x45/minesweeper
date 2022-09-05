@@ -58,4 +58,8 @@ class Game:
         pygame.display.update()
 
     def handle_event(self, event: pygame.event.Event) -> Action:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.back_button.collidepoint(event.pos) and event.button == 1:
+                return Action.MAIN_MENU
+
         return Action.NO_OP
