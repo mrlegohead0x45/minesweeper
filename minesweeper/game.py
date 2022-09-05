@@ -81,29 +81,35 @@ class Game:
             ):
                 return Action.MAIN_MENU
 
+            # get the tile
+            tile = None
+            for t in self.tiles:
+                if t.rect.collidepoint(event.pos):
+                    tile = t
+
+            if tile is None:
+                return Action.NO_OP
+
             if event.button == pygame.BUTTON_LEFT:  # reveal
-                # TODO: optimise
-                for tile in self.tiles:
-                    if tile.rect.collidepoint(event.pos):
-                        if tile.is_mine:
-                            self.show_all_mines()
+                if tile.is_mine:
+                    self.show_all_mines()
+
+                else:
+                    # loop through all
+                    pass
 
             elif event.button == pygame.BUTTON_RIGHT:  # flag
-                # TODO: optimise
-                for tile in self.tiles:
-                    if tile.rect.collidepoint(event.pos):
-                        tile.is_flagged = not tile.is_flagged
-                        tile.rect = pygame.draw.rect(
-                            self.screen,
-                            (PURPLE if tile.is_flagged else colours.BTN_COLOUR),
-                            (
-                                tile.rect.x,
-                                tile.rect.y,
-                                tile.rect.width,
-                                tile.rect.width,
-                            ),
-                        )
-                        break
+                tile.is_flagged = not tile.is_flagged
+                tile.rect = pygame.draw.rect(
+                    self.screen,
+                    (PURPLE if tile.is_flagged else colours.BTN_COLOUR),
+                    (
+                        tile.rect.x,
+                        tile.rect.y,
+                        tile.rect.width,
+                        tile.rect.width,
+                    ),
+                )
 
         pygame.display.update()
         return Action.NO_OP
