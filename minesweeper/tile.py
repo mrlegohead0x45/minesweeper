@@ -7,16 +7,7 @@ class Tile:
         self.is_mine = is_mine
         self.rect = rect
         self.is_flagged = False
-
-    def explode(self):
-        pass
-
-    def reveal(self):
-        if self.is_mine:
-            self.explode()
-
-        else:
-            pass
+        self.mines = 0
 
     # def flag(self):
     #     self.is_flagged = not self.is_flagged # toggle

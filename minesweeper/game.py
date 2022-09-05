@@ -69,6 +69,11 @@ class Game:
                 )
                 tile.rect = r
 
+        # assume 9x9 grid
+        # for idx, tile in enumerate(self.tiles):
+        #     if idx in [0, 8, 72, 80]: # corners
+        #         # get
+
         # r = pygame.draw.rect(self.screen, colours.BTN_COLOUR, (200, 100, 440, 440))
 
         pygame.display.update()
@@ -83,11 +88,13 @@ class Game:
 
             # get the tile
             tile = None
-            for t in self.tiles:
+            idx = -1
+            for i, t in enumerate(self.tiles):
                 if t.rect.collidepoint(event.pos):
                     tile = t
+                    idx = i
 
-            if tile is None:
+            if tile is None or idx == -1:
                 return Action.NO_OP
 
             if event.button == pygame.BUTTON_LEFT:  # reveal
@@ -95,8 +102,23 @@ class Game:
                     self.show_all_mines()
 
                 else:
-                    # loop through all
-                    pass
+                    # uncover all connected 0 tiles and their adjacent ones
+                    if idx == 0:  # tl corner
+                        pass
+                    elif idx == 8:  # tr corner
+                        pass
+                    elif idx == 72:  # bl corner
+                        pass
+                    elif idx == 80:  # br corner
+                        pass
+                    elif 1 <= idx <= 7:  # top
+                        pass
+                    elif 73 <= idx <= 79:  # bottom
+                        pass
+                    elif idx not in [8, 80] and idx - 1 % 9 == 0:  # right edge
+                        pass
+                    elif idx not in [0, 72] and idx % 9 == 0:  # left edge
+                        pass
 
             elif event.button == pygame.BUTTON_RIGHT:  # flag
                 tile.is_flagged = not tile.is_flagged
@@ -146,3 +168,22 @@ class Game:
 # 5 -> down scroll
 # 6 -> back
 # 7 -> forward
+
+# down-left -> idx += 10
+# assumong 9x9 grid, idx n to all adjacent tiles bar edges, corners etc
+######################
+# n-10  n-9 n-8
+# n-1   n   n+1
+# n+8   n+9 n+10
+######################
+
+
+# 0  1  2  3  4  5  6  7  8
+# 9  10 11 12 13 14 15 16 17
+# 18 19 20 21 22 23 24 25 26
+# 27 28 29 30 31 32 33 34 35
+# 36 37 38 39 40 41 42 43 44
+# 45 46 47 48 49 50 51 52 53
+# 54 55 56 57 58 59 60 61 62
+# 63 64 65 66 67 68 69 70 71
+# 72 73 74 75 76 77 78 79 80
