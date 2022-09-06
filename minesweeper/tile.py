@@ -7,6 +7,8 @@ class Tile:
         self.is_mine = is_mine
         self.rect = rect
         self.is_flagged = False
+        self.open = False
+        self.neighbours: list[Tile] = []
         self.mines = 0
 
     # def flag(self):

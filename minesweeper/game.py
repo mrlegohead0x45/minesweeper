@@ -52,14 +52,16 @@ class Game:
         # TODO: calculate width from number of tiles
         width = 50
         offset = 5
-
+        i = 0
         # drwa tiles
-        for column in range(self.difficulty.columns):  # 0 -> n-1
-            for row in range(self.difficulty.rows):
-                tile = next(i)
+        for row in range(self.difficulty.columns):  # 0 -> n-1
+            for column in range(self.difficulty.rows):
+                # tile = next(i)
+                tile = self.tiles[i]
                 r = pygame.draw.rect(
                     self.screen,
                     colours.BTN_COLOUR,
+                    # ()
                     (
                         startx + (width + offset) * column,
                         starty + (width + offset) * row,
@@ -68,6 +70,44 @@ class Game:
                     ),
                 )
                 tile.rect = r
+                i += 1
+
+        for idx, tile_ in enumerate(self.tiles):
+            diffs = []
+            if idx == 0:  # tl corner
+                diffs = [1, 9, 10]
+            elif idx == 8:  # tr corner
+                diffs = [-1, 8, 9]
+            elif idx == 72:  # bl corner
+                diffs = [-9, -8, 1]
+            elif idx == 80:  # br corner
+                diffs = [-10, -9, -1]
+            elif 1 <= idx <= 7:  # top
+                diffs = [-1, 1, 8, 9, 10]
+            elif 73 <= idx <= 79:  # bottom
+                diffs = [-10, -9, -8, -1, 1]
+            elif idx not in [8, 80] and ((idx + 1) % 9) == 0:  # right edge
+                diffs = [-10, -9, -1, 8, 9]
+                # log.info("right edge")
+            elif idx not in [0, 72] and idx % 9 == 0:  # left edge
+                diffs = [-9, -8, 1, 9, 10]
+            else:
+                diffs = [-10, -9, -8, -1, 1, 8, 9, 10]
+            log.info(idx)
+            log.info(diffs)
+            idxs = [idx + j for j in diffs]
+            log.info(idxs)
+            tile_.neighbours = [self.tiles[i] for i in idxs]
+            log.info(tile_.neighbours)
+            tile_.mines = (
+                -1
+                if tile_.is_mine
+                else sum([int(tile.is_mine) for tile in tile_.neighbours])
+            )
+
+            self.font.render_to(
+                self.screen, tile_.rect.center, str(tile_.mines), colours.TXT_COLOUR
+            )
 
         # assume 9x9 grid
         # for idx, tile in enumerate(self.tiles):
@@ -103,22 +143,21 @@ class Game:
 
                 else:
                     # uncover all connected 0 tiles and their adjacent ones
-                    if idx == 0:  # tl corner
-                        pass
-                    elif idx == 8:  # tr corner
-                        pass
-                    elif idx == 72:  # bl corner
-                        pass
-                    elif idx == 80:  # br corner
-                        pass
-                    elif 1 <= idx <= 7:  # top
-                        pass
-                    elif 73 <= idx <= 79:  # bottom
-                        pass
-                    elif idx not in [8, 80] and idx - 1 % 9 == 0:  # right edge
-                        pass
-                    elif idx not in [0, 72] and idx % 9 == 0:  # left edge
-                        pass
+                    print(len(tile.neighbours))
+                    log.info(tile.neighbours)
+                    log.info(idx)
+                    self.reveal_empty(tile)  # , idx)
+                    # for tile in tile.neighbours:
+                    #     tile.rect = pygame.draw.rect(
+                    #         self.screen,
+                    #         (255, 255, 255),
+                    #         (
+                    #             tile.rect.x,
+                    #             tile.rect.y,
+                    #             tile.rect.width,
+                    #             tile.rect.width,
+                    #         ),
+                    #     )
 
             elif event.button == pygame.BUTTON_RIGHT:  # flag
                 tile.is_flagged = not tile.is_flagged
@@ -160,6 +199,37 @@ class Game:
                 ),
             )
 
+    def reveal_empty(self, base_tile: Tile):  # , idx: int):
+        self.reveal_tile(base_tile)
+        # for tile in base_tile.neighbours:
+        #     if tile.mines == 0:
+        #         self.reveal_tile(tile)
+        for neighbour in base_tile.neighbours:
+            if not neighbour.is_mine:  # flagged?
+                self.reveal_tile(neighbour)
+
+        for neighbour in base_tile.neighbours:
+            if neighbour.mines == 0:
+                self.reveal_empty(neighbour)
+
+    def reveal_tile(self, tile: Tile):
+        self.show_mine_count(tile)
+        tile.rect = pygame.draw.rect(
+            self.screen,
+            (102, 102, 102),
+            (
+                tile.rect.x,
+                tile.rect.y,
+                tile.rect.width,
+                tile.rect.width,
+            ),
+        )
+
+    def show_mine_count(self, tile: Tile):
+        self.font.render_to(
+            self.screen, tile.rect.center, str(tile.mines), colours.TXT_COLOUR
+        )
+
 
 # 1 -> left
 # 2 -> middle
@@ -187,3 +257,19 @@ class Game:
 # 54 55 56 57 58 59 60 61 62
 # 63 64 65 66 67 68 69 70 71
 # 72 73 74 75 76 77 78 79 80
+
+# reveal all connected zeroes and adjacent
+
+
+# single reveal all adjacent non mined squares
+# repeat for any that are 0
+
+
+# recursive_reveal(tile):
+# 	single_reveal(tile)
+# 	if all neighbours revealed:
+# 		return
+
+# 	loop neighbours:
+# 		if mines = 0:
+# 			for neighbours where mines = 0:
