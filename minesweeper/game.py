@@ -94,11 +94,11 @@ class Game:
             else:
                 diffs = [-10, -9, -8, -1, 1, 8, 9, 10]
             log.info(idx)
-            log.info(diffs)
+            # log.info(diffs)
             idxs = [idx + j for j in diffs]
             log.info(idxs)
             tile_.neighbours = [self.tiles[i] for i in idxs]
-            log.info(tile_.neighbours)
+            # log.info(tile_.neighbours)
             tile_.mines = (
                 -1
                 if tile_.is_mine
@@ -123,10 +123,10 @@ class Game:
             if (
                 self.back_button.collidepoint(event.pos)
                 and event.button == pygame.BUTTON_LEFT
-            ):
+            ):  # if back button clicked
                 return Action.MAIN_MENU
 
-            # get the tile
+            # get the tile taht was clicked
             tile = None
             idx = -1
             for i, t in enumerate(self.tiles):
@@ -134,17 +134,17 @@ class Game:
                     tile = t
                     idx = i
 
-            if tile is None or idx == -1:
+            if tile is None or idx == -1:  # if not found
                 return Action.NO_OP
 
             if event.button == pygame.BUTTON_LEFT:  # reveal
-                if tile.is_mine:
+                if tile.is_mine and not tile.state == State.FLAGGED:
                     self.show_all_mines()
 
-                else:
+                elif tile.state == State.COVERED:
                     # uncover all connected 0 tiles and their adjacent ones
                     print(len(tile.neighbours))
-                    log.info(tile.neighbours)
+                    # log.info(tile.neighbours)
                     log.info(idx)
                     self.reveal_empty(tile)  # , idx)
                     # for tile in tile.neighbours:
@@ -160,10 +160,17 @@ class Game:
                     #     )
 
             elif event.button == pygame.BUTTON_RIGHT:  # flag
-                tile.is_flagged = not tile.is_flagged
+                # log.info(tile.is_flagged)
+                # tile.is_flagged = not tile.is_flagged
+                old_state = tile.state
+                if old_state == State.FLAGGED:
+                    tile.state = State.COVERED
+
+                elif old_state == State.COVERED:
+                    tile.state = State.FLAGGED
                 tile.rect = pygame.draw.rect(
                     self.screen,
-                    (PURPLE if tile.is_flagged else colours.BTN_COLOUR),
+                    (PURPLE if tile.state == State.FLAGGED else colours.BTN_COLOUR),
                     (
                         tile.rect.x,
                         tile.rect.y,
@@ -177,14 +184,13 @@ class Game:
 
     def show_all_mines(self):
         for tile in self.tiles:
-            colour = colours.BTN_COLOUR
+            colour = self.screen.get_at(tile.rect.center)
 
-            if tile.is_mine and not tile.is_flagged:
+            if tile.is_mine and tile.state == State.COVERED:
+                log.info("mine")
                 colour = RED
 
-            elif tile.is_mine and tile.is_flagged:
-                colour = PURPLE
-
+            # elif tile.state ==
             # elif tile.is_flagged and not tile.is_mine:
             #     colour = colours.BTN_COLOUR
 
@@ -204,8 +210,9 @@ class Game:
         for tile in base_tile.neighbours:
             if tile.mines == 0 and tile.state == State.COVERED:
                 self.reveal_empty(tile)
+
         for neighbour in base_tile.neighbours:
-            if neighbour.mines > 0 and tile.state == State.COVERED:  # flagged?
+            if neighbour.mines > 0 and neighbour.state == State.COVERED:  # flagged?
                 self.reveal_tile(neighbour)
 
         # for neighbour in base_tile.neighbours:
@@ -224,7 +231,8 @@ class Game:
                 tile.rect.width,
             ),
         )
-        self.show_mine_count(tile)
+        if tile.mines > 0:
+            self.show_mine_count(tile)
 
     def show_mine_count(self, tile: Tile):
         self.font.render_to(
