@@ -1,0 +1,7 @@
+recursive_reveal(tile):
+    single_reveal(tile)
+    for all covered zero neighbours:
+        recursive_reveal(neighbour)
+    
+    for all covered non-zero neighbours:
+        single_reveal(neighbour)

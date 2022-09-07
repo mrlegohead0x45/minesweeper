@@ -1,0 +1,7 @@
+{
+    "[plaintext]": {
+        "editor.unicodeHighlight.ambiguousCharacters": false,
+        "editor.unicodeHighlight.invisibleCharacters": true,
+        "editor.insertSpaces": true
+    }
+}

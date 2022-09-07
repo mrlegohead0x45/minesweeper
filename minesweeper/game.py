@@ -7,7 +7,7 @@ import pygame.freetype
 from . import colours
 from .action import Action
 from .difficulty import EASY
-from .tile import Tile
+from .tile import State, Tile
 
 RED = (0xFF, 0, 0)
 PURPLE = (114, 7, 135)
@@ -105,9 +105,9 @@ class Game:
                 else sum([int(tile.is_mine) for tile in tile_.neighbours])
             )
 
-            self.font.render_to(
-                self.screen, tile_.rect.center, str(tile_.mines), colours.TXT_COLOUR
-            )
+            # self.font.render_to(
+            #     self.screen, tile_.rect.center, str(tile_.mines), colours.TXT_COLOUR
+            # )
 
         # assume 9x9 grid
         # for idx, tile in enumerate(self.tiles):
@@ -201,19 +201,19 @@ class Game:
 
     def reveal_empty(self, base_tile: Tile):  # , idx: int):
         self.reveal_tile(base_tile)
-        # for tile in base_tile.neighbours:
-        #     if tile.mines == 0:
-        #         self.reveal_tile(tile)
+        for tile in base_tile.neighbours:
+            if tile.mines == 0 and tile.state == State.COVERED:
+                self.reveal_empty(tile)
         for neighbour in base_tile.neighbours:
-            if not neighbour.is_mine:  # flagged?
+            if neighbour.mines > 0 and tile.state == State.COVERED:  # flagged?
                 self.reveal_tile(neighbour)
 
-        for neighbour in base_tile.neighbours:
-            if neighbour.mines == 0:
-                self.reveal_empty(neighbour)
+        # for neighbour in base_tile.neighbours:
+        #     if neighbour.mines == 0:
+        #         self.reveal_empty(neighbour)
 
     def reveal_tile(self, tile: Tile):
-        self.show_mine_count(tile)
+        tile.state = State.OPEN
         tile.rect = pygame.draw.rect(
             self.screen,
             (102, 102, 102),
@@ -224,6 +224,7 @@ class Game:
                 tile.rect.width,
             ),
         )
+        self.show_mine_count(tile)
 
     def show_mine_count(self, tile: Tile):
         self.font.render_to(

@@ -1,5 +1,13 @@
+from enum import Enum, auto
+
 import pygame
 from pygame import Rect
+
+
+class State(Enum):
+    COVERED = auto()
+    OPEN = auto()
+    FLAGGED = auto()
 
 
 class Tile:
@@ -10,6 +18,7 @@ class Tile:
         self.open = False
         self.neighbours: list[Tile] = []
         self.mines = 0
+        self.state = State.COVERED
 
     # def flag(self):
     #     self.is_flagged = not self.is_flagged # toggle
